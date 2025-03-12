@@ -48,7 +48,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
+* For verifying email leads to avoid bouncing and affecting email deliverability for your domains
 * Can add CSV file and run the program which will output the leads verified and the % of bounces
 * Uses SMTP or MX to create an incomplete TCP request to verify the email
 
@@ -88,19 +88,18 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage with Docker (Manual)
 
-1. run 
+1. run docker build
    ```sh
    build -t email-validator .
    ```
-2. run 
+2. run the docker image
    ```sh
    docker run -d --rm -v "./leads.csv:/app/leads.csv" email-validator
    ```
-2. run 
+3. View the logs output
    ```sh
    docker logs -f "$CONTAINER_ID" | ccze -A
    ```
-3. View the logs output
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

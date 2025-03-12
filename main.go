@@ -73,13 +73,18 @@ func main() {
 				Err:   err != nil,
 			})
 		} else {
-			fmt.Printf("ERR VALIDATING %s: %v\n", record[0], err)
 			failEmails = append(failEmails, ValidatedEmail{
 				Email: record[0],
 				Err:   err != nil,
 			})
 		}
-
+		fmt.Printf("Finished Validating email: %s: %v\n", record[0], func() string {
+			if res.Success {
+				return "valid"
+			} else {
+				return "invalid"
+			}
+		}())
 	}
 
 	totalSuccessRate := float64(len(successEmails)) / float64(totalEmailAddr) * 100
@@ -87,4 +92,40 @@ func main() {
 
 	fmt.Printf("Successfully Validate Email addresses: \n%v\n", successEmails)
 	fmt.Printf("Un-successfully Validated Email addresses: \n%v\n", failEmails)
+
+	// Write successEmails to leads-successful.csv
+	successFile, err := os.Create(filepath.Join(wd, "leads-successful.csv"))
+	if err != nil {
+		log.Fatal("Failed to create leads-successful.csv:", err)
+	}
+	defer successFile.Close()
+
+	successWriter := csv.NewWriter(successFile)
+	defer successWriter.Flush()
+
+	for _, email := range successEmails {
+		err := successWriter.Write([]string{email.Email})
+		if err != nil {
+			log.Fatal("Failed to write to leads-successful.csv:", err)
+		}
+	}
+	fmt.Println("Successfully wrote leads-successful.csv")
+
+	// Write failEmails to leads-failure.csv
+	failFile, err := os.Create(filepath.Join(wd, "leads-failure.csv"))
+	if err != nil {
+		log.Fatal("Failed to create leads-failure.csv:", err)
+	}
+	defer failFile.Close()
+
+	failWriter := csv.NewWriter(failFile)
+	defer failWriter.Flush()
+
+	for _, email := range failEmails {
+		err := failWriter.Write([]string{email.Email})
+		if err != nil {
+			log.Fatal("Failed to write to leads-failure.csv:", err)
+		}
+	}
+	fmt.Println("Successfully wrote leads-failure.csv")
 }
