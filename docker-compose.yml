@@ -1,0 +1,7 @@
+version: '3'
+services:
+  email-validator:
+    build: .
+    volumes:
+      - ./leads.csv:/app/leads.csv # mount .csv file
+    restart: unless-stopped
