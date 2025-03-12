@@ -3,8 +3,13 @@
 # Set the path to your leads.csv file
 LEADS_FILE="/path/to/your/leads.csv"
 
-# Build the Docker image (optional if you have already built it)
-docker build -t email-validator .
+# Check if the image exists; if not, build it
+if ! docker image inspect email-validator > /dev/null 2>&1; then
+    echo "Image does not exist. Building the Docker image..."
+    docker build -t email-validator .
+else
+    echo "Image already exists. Skipping build..."
+fi
 
 # Run the Docker container with your CSV file mounted
 echo "Running the email validation container..."
