@@ -19,7 +19,7 @@ CONTAINER_ID=$(docker run -d --rm -v "$LEADS_FILE:/app/leads.csv" email-validato
 echo "Container started with ID $CONTAINER_ID. Viewing logs..."
 
 # View the logs of the running container
-docker logs -f "$CONTAINER_ID" | 
+docker logs -f "$CONTAINER_ID" | ccze -A
 
 # The container will be removed automatically due to --rm, so no need to clean up
 echo "Email validation completed. Container logs shown above."
