@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the path to your leads.csv file
-LEADS_DIR="./leads/leads.csv"
+LEADS_DIR="./leads/"
 
 # Check if the image exists; if not, build it
 if ! docker image inspect email-validator > /dev/null 2>&1; then
