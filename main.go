@@ -11,22 +11,17 @@ import (
 )
 
 func main() {
-	configuration, _ := truemail.NewConfiguration(truemail.ConfigurationAttr{
-		VerifierEmail:         "dummyEmail",
-		VerifierDomain:        "hotmail.com",
-		EmailPattern:          `\A.+@(.+)\z`,
-		SmtpErrorBodyPattern:  `.*(user|account).*`,
-		ConnectionTimeout:     5, // Increased timeout
-		ResponseTimeout:       5, // Increased timeout
+	configuration, err := truemail.NewConfiguration(truemail.ConfigurationAttr{
+		VerifierEmail:         "luke.taaffe@hotmail.com",
+		ConnectionTimeout:     3, // Increased timeout
+		ResponseTimeout:       3, // Increased timeout
 		ConnectionAttempts:    2,
 		ValidationTypeDefault: "smtp",
-		WhitelistedDomains:    []string{"somedomain1.com", "somedomain2.com"},
-		BlacklistedDomains:    []string{"somedomain3.com", "somedomain4.com"},
-		ValidationTypeByDomain: map[string]string{
-			"somedomain.com":  "regex",
-			"otherdomain.com": "mx",
-		},
 	})
+	if err != nil {
+		log.Fatal("Failed to create configuration:", err)
+	}
+
 	wd, _ := os.Getwd()
 	filePath := filepath.Join(wd, "leads.csv")
 
@@ -43,36 +38,57 @@ func main() {
 	}
 
 	type ValidatedEmail struct {
-		Email   string
-		IsValid bool
-		Err     bool
+		Email string
+		res   bool
+		Err   bool
 	}
 
 	validatedEmailAddresses := []ValidatedEmail{}
 
-	totalEmailAddr := len(records) - 1
+	totalEmailAddr := func() int {
+		if len(records)-1 >= 0 {
+			return len(records) - 1
+		} else {
+			return 0
+		}
+	}()
+
 	fmt.Printf("Beginning email validation. You are analysing a total of %v email address records\n", totalEmailAddr)
 
 	// Read all the records from the CSV file
 	var countSuccessfulEmails int32 = 0
 	var countUnsuccessfulEmails int32 = 0
 
-	for _, record := range records {
-		isValid, err := truemail.Validate(record[0], configuration)
+	for i, record := range records {
+		// Skip the header row
+		if i == 0 {
+			continue
+		}
+
+		// Skip empty email addresses
+		if record[0] == "" {
+			continue
+		}
+
+		res, err := truemail.Validate(record[0], configuration)
 
 		validEmail := false
-		if err == nil && isValid.Success {
+		if err == nil && res != nil && res.Success {
+			fmt.Print(res.Errors, res.SmtpDebug)
 			countSuccessfulEmails++
 			validEmail = true
 		} else {
 			fmt.Printf("ERR VALIDATING %s: %v\n", record[0], err)
+			if res != nil {
+				fmt.Print(res.Errors, res.SmtpDebug)
+			}
 			countUnsuccessfulEmails++
 		}
 
 		validatedEmailAddresses = append(validatedEmailAddresses, ValidatedEmail{
-			Email:   record[0],
-			IsValid: validEmail,
-			Err:     err != nil,
+			Email: record[0],
+			res:   validEmail,
+			Err:   err != nil,
 		})
 	}
 
