@@ -16,6 +16,7 @@
     Shout out to @bestwebua and @RichiMaulana for the TrueMail Lib allowing this to work so easily.
     This requires SMTP port 25 to be open, so deploy this on a VPS in order for it to work.
     Just drop your CSV of leads into a file, give the path and run this on your server, it will output the success/failures & (%).
+    Writes the successful or unsuccessful leads into CSV files in working dir
   </p>
 </div>
 

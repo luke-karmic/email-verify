@@ -3,5 +3,5 @@ services:
   email-validator:
     build: .
     volumes:
-      - ./leads.csv:/app/leads.csv # mount .csv file
+      - ./leads/:/app/leads/ # mount .csv file
     restart: unless-stopped

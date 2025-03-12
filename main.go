@@ -12,9 +12,9 @@ import (
 
 func main() {
 	configuration, err := truemail.NewConfiguration(truemail.ConfigurationAttr{
-		VerifierEmail:         "luke.taaffe@hotmail.com",
-		ConnectionTimeout:     3, // Increased timeout
-		ResponseTimeout:       3, // Increased timeout
+		VerifierEmail:         "luke.taaffe@hotmail.com", // some random fake email
+		ConnectionTimeout:     3,                         // Increased timeout
+		ResponseTimeout:       3,                         // Increased timeout
 		ConnectionAttempts:    2,
 		ValidationTypeDefault: "smtp",
 	})
@@ -23,7 +23,7 @@ func main() {
 	}
 
 	wd, _ := os.Getwd()
-	filePath := filepath.Join(wd, "leads.csv")
+	filePath := filepath.Join(wd, "leads/leads.csv")
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -94,7 +94,7 @@ func main() {
 	fmt.Printf("Un-successfully Validated Email addresses: \n%v\n", failEmails)
 
 	// Write successEmails to leads-successful.csv
-	successFile, err := os.Create(filepath.Join(wd, "leads-successful.csv"))
+	successFile, err := os.Create(filepath.Join(wd, "leads/leads-successful.csv"))
 	if err != nil {
 		log.Fatal("Failed to create leads-successful.csv:", err)
 	}
@@ -112,7 +112,7 @@ func main() {
 	fmt.Println("Successfully wrote leads-successful.csv")
 
 	// Write failEmails to leads-failure.csv
-	failFile, err := os.Create(filepath.Join(wd, "leads-failure.csv"))
+	failFile, err := os.Create(filepath.Join(wd, "leads/leads-failure.csv"))
 	if err != nil {
 		log.Fatal("Failed to create leads-failure.csv:", err)
 	}
