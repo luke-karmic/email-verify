@@ -67,7 +67,6 @@ func main() {
 		}
 
 		res, err := truemail.Validate(record[0], configuration)
-
 		if err == nil && res != nil && res.Success {
 			successEmails = append(successEmails, ValidatedEmail{
 				Email: record[0],
@@ -75,7 +74,7 @@ func main() {
 			})
 		} else {
 			fmt.Printf("ERR VALIDATING %s: %v\n", record[0], err)
-			failEmails = append(successEmails, ValidatedEmail{
+			failEmails = append(failEmails, ValidatedEmail{
 				Email: record[0],
 				Err:   err != nil,
 			})
@@ -84,7 +83,7 @@ func main() {
 	}
 
 	totalSuccessRate := float64(len(successEmails)) / float64(totalEmailAddr) * 100
-	fmt.Printf("You have successfully checked %v email addresses, %v are valid, %v are invalid, total success rate %v%%\n", totalEmailAddr, len(successEmails), len(failEmails), totalSuccessRate)
+	fmt.Printf("You have successfully checked %v email addresses, %v are valid, %v are invalid, total success rate %.2f%%\n", totalEmailAddr, len(successEmails), len(failEmails), totalSuccessRate)
 
 	fmt.Printf("Successfully Validate Email addresses: \n%v\n", successEmails)
 	fmt.Printf("Un-successfully Validated Email addresses: \n%v\n", failEmails)

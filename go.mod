@@ -1,6 +1,8 @@
-module github.com/luke-karmic/go-email-verify
+module github.com/luke-karmic/email-validator
 
 go 1.23.6
+
+require github.com/truemail-rb/truemail-go v1.1.4
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.28.0 // indirect
@@ -11,7 +13,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	github.com/truemail-rb/truemail-go v1.1.4 // indirect
 	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
