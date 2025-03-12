@@ -12,7 +12,10 @@
   <h3 align="center">Email verifier - Lead verification</h3>
 
   <p align="center">
-    A quick goLang lead verifier, instead of paying monthly for email verification, use TrueMail Lib to do it manually
+    A Docker-based quick GoLang lead verifier, instead of paying monthly for email verification, use TrueMail Lib to do it manually.
+    Shout out to @bestwebua and @RichiMaulana for the TrueMail Lib allowing this to work so easily.
+    This requires SMTP port 25 to be open, so deploy this on a VPS in order for it to work.
+    Just drop your CSV of leads into a file, give the path and run this on your server, it will output the success/failures & (%).
   </p>
 </div>
 
@@ -73,6 +76,9 @@ _Below is an example of how you can instruct your audience on installing and set
    https://github.com/luke-karmic/email-verify
    ```
 2. Add your `leads.csv` file
+3. `sudo apt-get install ccze` for the colorized logs
+3. Update the docker file with your path to the CSV: `LEADS_FILE="./leads.csv"`
+4. If you will use the `run.sh` script, you must give execution permissions by running `chmod +x run.sh`
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -80,13 +86,21 @@ _Below is an example of how you can instruct your audience on installing and set
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Usage with Docker (Manual)
 
-1. Run the verifier 
+1. run 
    ```sh
-   go main.go
+   build -t email-validator .
    ```
-2. View output in CLI
+2. run 
+   ```sh
+   docker run -d --rm -v "./leads.csv:/app/leads.csv" email-validator
+   ```
+2. run 
+   ```sh
+   docker logs -f "$CONTAINER_ID" | ccze -A
+   ```
+3. View the logs output
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

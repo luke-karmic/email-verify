@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the path to your leads.csv file
-LEADS_FILE="/path/to/your/leads.csv"
+LEADS_FILE="./leads.csv"
 
 # Check if the image exists; if not, build it
 if ! docker image inspect email-validator > /dev/null 2>&1; then
@@ -19,7 +19,7 @@ CONTAINER_ID=$(docker run -d --rm -v "$LEADS_FILE:/app/leads.csv" email-validato
 echo "Container started with ID $CONTAINER_ID. Viewing logs..."
 
 # View the logs of the running container
-docker logs -f "$CONTAINER_ID"
+docker logs -f "$CONTAINER_ID" | 
 
 # The container will be removed automatically due to --rm, so no need to clean up
 echo "Email validation completed. Container logs shown above."

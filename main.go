@@ -39,11 +39,11 @@ func main() {
 
 	type ValidatedEmail struct {
 		Email string
-		res   bool
 		Err   bool
 	}
 
-	validatedEmailAddresses := []ValidatedEmail{}
+	successEmails := []ValidatedEmail{}
+	failEmails := []ValidatedEmail{}
 
 	totalEmailAddr := func() int {
 		if len(records)-1 >= 0 {
@@ -54,10 +54,6 @@ func main() {
 	}()
 
 	fmt.Printf("Beginning email validation. You are analysing a total of %v email address records\n", totalEmailAddr)
-
-	// Read all the records from the CSV file
-	var countSuccessfulEmails int32 = 0
-	var countUnsuccessfulEmails int32 = 0
 
 	for i, record := range records {
 		// Skip the header row
@@ -72,29 +68,24 @@ func main() {
 
 		res, err := truemail.Validate(record[0], configuration)
 
-		validEmail := false
 		if err == nil && res != nil && res.Success {
-			fmt.Print(res.Errors, res.SmtpDebug)
-			countSuccessfulEmails++
-			validEmail = true
+			successEmails = append(successEmails, ValidatedEmail{
+				Email: record[0],
+				Err:   err != nil,
+			})
 		} else {
 			fmt.Printf("ERR VALIDATING %s: %v\n", record[0], err)
-			if res != nil {
-				fmt.Print(res.Errors, res.SmtpDebug)
-			}
-			countUnsuccessfulEmails++
+			failEmails = append(successEmails, ValidatedEmail{
+				Email: record[0],
+				Err:   err != nil,
+			})
 		}
 
-		validatedEmailAddresses = append(validatedEmailAddresses, ValidatedEmail{
-			Email: record[0],
-			res:   validEmail,
-			Err:   err != nil,
-		})
 	}
 
-	totalSuccessRate := float64(countSuccessfulEmails) / float64(totalEmailAddr) * 100
-	fmt.Printf("You have successfully checked %v email addresses, %v are valid, %v are invalid, total success rate %v%%", totalEmailAddr, countSuccessfulEmails, countUnsuccessfulEmails, totalSuccessRate)
+	totalSuccessRate := float64(len(successEmails)) / float64(totalEmailAddr) * 100
+	fmt.Printf("You have successfully checked %v email addresses, %v are valid, %v are invalid, total success rate %v%%\n", totalEmailAddr, len(successEmails), len(failEmails), totalSuccessRate)
 
-	// Custom format using fmt.Printf
-	fmt.Printf("%v\n", validatedEmailAddresses)
+	fmt.Printf("Successfully Validate Email addresses: \n%v\n", successEmails)
+	fmt.Printf("Un-successfully Validated Email addresses: \n%v\n", failEmails)
 }
