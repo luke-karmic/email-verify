@@ -4,7 +4,7 @@
   [![LinkedIn][linkedin-shield]][linkedin-url]
 
 </div>
-
+<img width="1115" alt="Screenshot 2025-03-12 at 18 20 35" src="https://github.com/user-attachments/assets/3a0dedb3-1b2b-476c-b8c6-bd68e85d6e2d" />
 
 <!-- PROJECT LOGO -->
 <br />
