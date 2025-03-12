@@ -76,7 +76,7 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    https://github.com/luke-karmic/email-verify
    ```
-2. Add your `leads.csv` file
+2. Add your `leads/leads.csv` file, ensure there is a column named 'email' with the email address for this to work
 3. `sudo apt-get install ccze` for the colorized logs
 3. Update the docker file with your path to the CSV: `LEADS_FILE="./leads.csv"`
 4. If you will use the `run.sh` script, you must give execution permissions by running `chmod +x run.sh`

@@ -38,8 +38,9 @@ func main() {
 	}
 
 	type ValidatedEmail struct {
-		Email string
-		Err   bool
+		Email  string
+		Err    bool
+		Record []string
 	}
 
 	successEmails := []ValidatedEmail{}
@@ -55,30 +56,40 @@ func main() {
 
 	fmt.Printf("Beginning email validation. You are analysing a total of %v email address records\n", totalEmailAddr)
 
+	var emailFieldKey int = -1
+	var headerRow []string
 	for i, record := range records {
-		// Skip the header row
 		if i == 0 {
+			headerRow = record
+			for j := range record {
+				if record[j] == "email" {
+					emailFieldKey = j
+				}
+			}
 			continue
 		}
 
-		// Skip empty email addresses
-		if record[0] == "" {
-			continue
+		// Check field key is set
+		if emailFieldKey == -1 {
+			log.Println("Email field not found in record, exiting...")
+			os.Exit(1)
 		}
 
-		res, err := truemail.Validate(record[0], configuration)
+		res, err := truemail.Validate(record[emailFieldKey], configuration)
 		if err == nil && res != nil && res.Success {
 			successEmails = append(successEmails, ValidatedEmail{
-				Email: record[0],
-				Err:   err != nil,
+				Email:  record[emailFieldKey],
+				Err:    err != nil,
+				Record: record,
 			})
 		} else {
 			failEmails = append(failEmails, ValidatedEmail{
-				Email: record[0],
-				Err:   err != nil,
+				Email:  record[emailFieldKey],
+				Err:    err != nil,
+				Record: record,
 			})
 		}
-		fmt.Printf("Finished Validating email: %s: %v\n", record[0], func() string {
+		fmt.Printf("Finished Validating email: %s: %v\n", record[emailFieldKey], func() string {
 			if res.Success {
 				return "valid"
 			} else {
@@ -102,9 +113,10 @@ func main() {
 
 	successWriter := csv.NewWriter(successFile)
 	defer successWriter.Flush()
+	successWriter.Write(headerRow)
 
 	for _, email := range successEmails {
-		err := successWriter.Write([]string{email.Email})
+		err := successWriter.Write(email.Record)
 		if err != nil {
 			log.Fatal("Failed to write to leads-successful.csv:", err)
 		}
@@ -120,9 +132,10 @@ func main() {
 
 	failWriter := csv.NewWriter(failFile)
 	defer failWriter.Flush()
+	failWriter.Write(headerRow)
 
 	for _, email := range failEmails {
-		err := failWriter.Write([]string{email.Email})
+		err := failWriter.Write(email.Record)
 		if err != nil {
 			log.Fatal("Failed to write to leads-failure.csv:", err)
 		}
