@@ -97,10 +97,20 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    docker run -d --rm -v "./leads.csv:/app/leads.csv" email-validator
    ```
-3. View the logs output
+
+3. make the shell command executable 
    ```sh
-   docker logs -f "$CONTAINER_ID" | ccze -A
+   chmod +x run.sh
    ```
+4. run the shell command
+   ```sh
+    ./run.sh
+   ```
+4. copy the finished file out of the container
+   ```sh
+    scp root@server_ip:/root/email-verify/leads/leads-successful.csv .
+   ```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
